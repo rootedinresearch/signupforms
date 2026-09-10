@@ -64,11 +64,16 @@ function doPost(e) {
     ];
 
     var newRow = sheet.getLastRow() + 1;
-    var phoneColIndex = HEADERS.indexOf("Phone") + 1;
-    // Force the phone cell to plain text first — otherwise Sheets treats a
-    // value like "+1 (405) 612-0038" as an arithmetic formula (leading "+")
-    // and throws a formula parse error, aborting the whole row write.
-    sheet.getRange(newRow, phoneColIndex).setNumberFormat("@");
+    // Any free-text field could start with "+", "-", "=", or "@" — Sheets
+    // treats that as the start of a formula and throws a parse error that
+    // aborts the ENTIRE row write (e.g. a phone number like
+    // "+1 (405) 612-0038"). Force these text columns to plain text before
+    // writing so no input can ever trigger that, regardless of format.
+    var TEXT_COLUMNS = ["Attending", "Parent Name", "Email", "Phone", "Swimmer Names", "Notes"];
+    TEXT_COLUMNS.forEach(function (header) {
+      var colIndex = HEADERS.indexOf(header) + 1;
+      sheet.getRange(newRow, colIndex).setNumberFormat("@");
+    });
     sheet.getRange(newRow, 1, 1, rowValues.length).setValues([rowValues]);
 
     sendConfirmationEmail(data, swimmerNames);
