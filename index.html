@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Barracuda Swim Meet Registration — British Swim School</title>
+<meta name="description" content="Register swimmers for the Barracuda Swim Meet on October 17 at Denton Natatorium. $15 per swimmer, $5 per spectator." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bss-blue: #132EA8;
+    --bss-red: #DC001F;
+    --bss-red-dark: #B10018;
+    --bss-yellow: #FFE100;
+    --bss-white: #FFFFFF;
+    --text-dark: #1A1A2E;
+    --text-muted: #5A5F73;
+    --border: #E1E4EC;
+    --bg: #F4F5FA;
+    --error: #DC001F;
+    --success: #1E8E3E;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text-dark);
+    -webkit-font-smoothing: antialiased;
+  }
+  .page {
+    max-width: 600px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: var(--bss-white);
+    box-shadow: 0 0 40px rgba(19,46,168,0.08);
+  }
+  .hero {
+    background: linear-gradient(135deg, var(--bss-blue) 0%, #0E2280 100%);
+    color: var(--bss-white);
+    padding: 32px 24px 28px;
+    text-align: center;
+  }
+  .hero .logo {
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.9;
+    margin-bottom: 14px;
+  }
+  .hero .logo span { color: var(--bss-yellow); }
+  .hero h1 {
+    font-weight: 700;
+    font-size: 26px;
+    margin: 0 0 10px;
+    line-height: 1.25;
+  }
+  .hero .event-meta {
+    font-weight: 500;
+    font-size: 15px;
+    opacity: 0.95;
+    line-height: 1.6;
+  }
+  .hero .event-meta strong { color: var(--bss-yellow); }
+  .progress-wrap {
+    padding: 18px 24px 0;
+  }
+  .progress-label {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .progress-track {
+    height: 6px;
+    border-radius: 4px;
+    background: var(--border);
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--bss-red);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+  .step {
+    display: none;
+    padding: 24px;
+  }
+  .step.active { display: block; }
+  .step h2 {
+    font-weight: 700;
+    font-size: 19px;
+    margin: 0 0 6px;
+    color: var(--bss-blue);
+  }
+  .step .step-copy {
+    font-weight: 400;
+    font-size: 14.5px;
+    color: var(--text-muted);
+    margin: 0 0 22px;
+    line-height: 1.5;
+  }
+  .field {
+    margin-bottom: 18px;
+  }
+  .field label {
+    display: block;
+    font-weight: 600;
+    font-size: 13.5px;
+    margin-bottom: 6px;
+    color: var(--text-dark);
+  }
+  .field label .req { color: var(--bss-red); }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    color: var(--text-dark);
+    background: var(--bss-white);
+    transition: border-color 0.15s ease;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: var(--bss-blue);
+  }
+  .field input.invalid,
+  .field select.invalid {
+    border-color: var(--error);
+  }
+  .field textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  .char-count {
+    text-align: right;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .error-msg {
+    color: var(--error);
+    font-size: 12.5px;
+    font-weight: 500;
+    margin-top: 5px;
+    display: none;
+  }
+  .error-msg.show { display: block; }
+  .row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .cost-summary {
+    background: linear-gradient(135deg, #EEF1FD 0%, #E4E9FB 100%);
+    border: 1.5px solid #C9D2F5;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-top: 6px;
+  }
+  .cost-summary .cost-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .cost-summary .cost-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--bss-blue);
+    border-top: 1.5px dashed #C9D2F5;
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+  .swimmer-card {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 14px;
+    background: #FAFBFE;
+  }
+  .swimmer-card .swimmer-label {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--bss-blue);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .confirm-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #FFF8E1;
+    border: 1.5px solid #FFE9A8;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 22px;
+  }
+  .confirm-box input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-top: 1px;
+    accent-color: var(--bss-blue);
+    flex-shrink: 0;
+  }
+  .confirm-box label {
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--text-dark);
+  }
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .btn {
+    flex: 1;
+    padding: 15px 20px;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 15.5px;
+    cursor: pointer;
+    border: none;
+    transition: background 0.15s ease, opacity 0.15s ease;
+  }
+  .btn-primary {
+    background: var(--bss-red);
+    color: var(--bss-white);
+  }
+  .btn-primary:hover:not(:disabled) { background: var(--bss-red-dark); }
+  .btn-primary:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1.5px solid var(--border);
+    flex: 0 0 auto;
+  }
+  .btn-secondary:hover { background: var(--bg); }
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2.5px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .success-screen {
+    display: none;
+    padding: 48px 28px;
+    text-align: center;
+  }
+  .success-screen.active { display: block; }
+  .check-circle {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: var(--success);
+    color: #fff;
+    font-size: 40px;
+    line-height: 76px;
+    margin: 0 auto 22px;
+    font-weight: 700;
+  }
+  .success-screen h2 {
+    color: var(--bss-blue);
+    font-size: 22px;
+    margin: 0 0 12px;
+  }
+  .success-screen p {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0 0 6px;
+  }
+  .success-contact {
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1.5px solid var(--border);
+    font-size: 14px;
+    color: var(--text-dark);
+    line-height: 2;
+  }
+  .success-contact a {
+    color: var(--bss-blue);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .submit-error {
+    display: none;
+    background: #FDEAEC;
+    border: 1.5px solid #F5C2CA;
+    color: var(--error);
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+  .submit-error.show { display: block; }
+  @media (max-width: 420px) {
+    .row-2 { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="hero">
+    <div class="logo">🏊 British Swim School <span>| Barracudas</span></div>
+    <h1>Barracuda Swim Meet Registration</h1>
+    <div class="event-meta">
+      <strong>Saturday, October 17, 2026 · 5:30 PM</strong><br>
+      Denton Natatorium
+    </div>
+  </div>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-label" id="progressLabel">Step 1 of 4</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:25%"></div></div>
+  </div>
+
+  <form id="signupForm" novalidate>
+
+    <!-- STEP 1 -->
+    <div class="step active" data-step="1">
+      <h2>Family Contact Information</h2>
+      <p class="step-copy">Register your family for the Barracuda Swim Meet — Saturday, October 17 at 5:30 PM at Denton Natatorium.</p>
+
+      <div class="row-2">
+        <div class="field">
+          <label>First Name <span class="req">*</span></label>
+          <input type="text" id="parentFirstName" autocomplete="given-name" />
+          <div class="error-msg" id="err-parentFirstName">Please enter your first name.</div>
+        </div>
+        <div class="field">
+          <label>Last Name <span class="req">*</span></label>
+          <input type="text" id="parentLastName" autocomplete="family-name" />
+          <div class="error-msg" id="err-parentLastName">Please enter your last name.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Email <span class="req">*</span></label>
+        <input type="email" id="email" autocomplete="email" placeholder="you@example.com" />
+        <div class="error-msg" id="err-email">Please enter a valid email address.</div>
+      </div>
+
+      <div class="field">
+        <label>Phone Number <span class="req">*</span></label>
+        <input type="tel" id="phone" autocomplete="tel" placeholder="(555) 123-4567" />
+        <div class="error-msg" id="err-phone">Please enter a valid phone number.</div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-primary" onclick="goToStep(2)">Continue</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step" data-step="2">
+      <h2>Swimmers &amp; Spectators</h2>
+      <p class="step-copy">How many will be competing and how many coming to cheer them on?</p>
+
+      <div class="row-2">
+        <div class="field">
+          <label>Number of Swimmers <span class="req">*</span></label>
+          <select id="swimmerCount">
+            <option value="">Select...</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5+</option>
+          </select>
+          <div class="error-msg" id="err-swimmerCount">Please select the number of swimmers.</div>
+        </div>
+        <div class="field">
+          <label>Number of Spectators <span class="req">*</span></label>
+          <select id="spectatorCount">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10+</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="cost-summary">
+        <div class="cost-line"><span id="swimmerCostLine">0 Swimmers × $15</span><span id="swimmerCostVal">$0</span></div>
+        <div class="cost-line"><span id="spectatorCostLine">0 Spectators × $5</span><span id="spectatorCostVal">$0</span></div>
+        <div class="cost-total"><span>Total</span><span id="totalCostVal">$0</span></div>
+      </div>
+
+      <div class="btn-row" style="margin-top:22px;">
+        <button type="button" class="btn btn-secondary" onclick="goToStep(1)">Back</button>
+        <button type="button" class="btn btn-primary" onclick="goToStep(3)">Continue</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step" data-step="3">
+      <h2>Swimmer Names</h2>
+      <p class="step-copy">Tell us about each swimmer:</p>
+
+      <div id="swimmerFields"></div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-secondary" onclick="goToStep(2)">Back</button>
+        <button type="button" class="btn btn-primary" onclick="goToStep(4)">Continue</button>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step" data-step="4">
+      <h2>Notes &amp; Confirmation</h2>
+      <p class="step-copy">Just a couple more things and you're all set.</p>
+
+      <div class="field">
+        <label>Additional Notes</label>
+        <textarea id="notes" maxlength="200" placeholder="Any special requests, dietary needs, or questions?"></textarea>
+        <div class="char-count"><span id="notesCount">0</span>/200</div>
+      </div>
+
+      <div class="cost-summary" style="margin-bottom:20px;">
+        <div class="cost-total"><span>Total Due</span><span id="totalCostVal2">$0</span></div>
+      </div>
+
+      <div class="submit-error" id="submitError">Something went wrong submitting your registration. Please try again.</div>
+
+      <div class="confirm-box">
+        <input type="checkbox" id="confirmCharge" />
+        <label for="confirmCharge">I authorize charging this family's card on file for the full amount (<strong><span id="confirmTotal">$0</span></strong>).</label>
+      </div>
+      <div class="error-msg" id="err-confirmCharge">Please confirm authorization to continue.</div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-secondary" onclick="goToStep(3)">Back</button>
+        <button type="submit" class="btn btn-primary" id="submitBtn">Complete Signup</button>
+      </div>
+    </div>
+
+  </form>
+
+  <div class="success-screen" id="successScreen">
+    <div class="check-circle">✓</div>
+    <h2 id="successHeadline">You're all set! 🎉</h2>
+    <p id="successMsg">We've registered your family for the meet.</p>
+    <p id="successEmailMsg">A confirmation email is on its way.</p>
+    <div class="success-contact">
+      Questions? Call us at <a href="tel:8179735455">817-973-5455</a><br>
+      or email <a href="mailto:goswimarlsgpra@britishswimschool.com">goswimarlsgpra@britishswimschool.com</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ---- Configuration ----
+  // Replace with your deployed Google Apps Script Web App URL (see Appendix in build plan).
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwRBcRV5NjQiRLQcxbeH3QHTWqjFbRoY-92e4jseIf7FUyDWc5i_otKoumthlCcJ8Rg/exec";
+
+  const SWIMMER_PRICE = 15;
+  const SPECTATOR_PRICE = 5;
+  const TOTAL_STEPS = 4;
+
+  let currentStep = 1;
+
+  const el = (id) => document.getElementById(id);
+
+  function updateProgress() {
+    el("progressLabel").textContent = `Step ${currentStep} of ${TOTAL_STEPS}`;
+    el("progressFill").style.width = `${(currentStep / TOTAL_STEPS) * 100}%`;
+  }
+
+  function showStep(step) {
+    document.querySelectorAll(".step").forEach((s) => {
+      s.classList.toggle("active", parseInt(s.dataset.step, 10) === step);
+    });
+    currentStep = step;
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function clearError(fieldId) {
+    const input = el(fieldId);
+    const err = el(`err-${fieldId}`);
+    if (input) input.classList.remove("invalid");
+    if (err) err.classList.remove("show");
+  }
+
+  function setError(fieldId) {
+    const input = el(fieldId);
+    const err = el(`err-${fieldId}`);
+    if (input) input.classList.add("invalid");
+    if (err) err.classList.add("show");
+  }
+
+  function isValidEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+  }
+
+  function isValidPhone(value) {
+    const digits = value.replace(/\D/g, "");
+    return digits.length >= 10;
+  }
+
+  function validateStep1() {
+    let valid = true;
+    ["parentFirstName", "parentLastName"].forEach((id) => {
+      if (!el(id).value.trim()) { setError(id); valid = false; } else { clearError(id); }
+    });
+    if (!isValidEmail(el("email").value)) { setError("email"); valid = false; } else { clearError("email"); }
+    if (!isValidPhone(el("phone").value)) { setError("phone"); valid = false; } else { clearError("phone"); }
+    return valid;
+  }
+
+  function validateStep2() {
+    let valid = true;
+    if (!el("swimmerCount").value) { setError("swimmerCount"); valid = false; } else { clearError("swimmerCount"); }
+    return valid;
+  }
+
+  function validateStep3() {
+    let valid = true;
+    const count = parseInt(el("swimmerCount").value, 10) || 0;
+    for (let i = 1; i <= count; i++) {
+      const first = el(`swimmerFirst${i}`);
+      const last = el(`swimmerLast${i}`);
+      if (!first.value.trim()) { setError(`swimmerFirst${i}`); valid = false; } else { clearError(`swimmerFirst${i}`); }
+      if (!last.value.trim()) { setError(`swimmerLast${i}`); valid = false; } else { clearError(`swimmerLast${i}`); }
+    }
+    return valid;
+  }
+
+  function validateStep4() {
+    let valid = true;
+    if (!el("confirmCharge").checked) { setError("confirmCharge"); valid = false; } else { clearError("confirmCharge"); }
+    return valid;
+  }
+
+  function getSwimmerCount() {
+    return parseInt(el("swimmerCount").value, 10) || 0;
+  }
+  function getSpectatorCount() {
+    return parseInt(el("spectatorCount").value, 10) || 0;
+  }
+
+  function calcTotal() {
+    const swimmers = getSwimmerCount();
+    const spectators = getSpectatorCount();
+    return swimmers * SWIMMER_PRICE + spectators * SPECTATOR_PRICE;
+  }
+
+  function updateCostDisplay() {
+    const swimmers = getSwimmerCount();
+    const spectators = getSpectatorCount();
+    const swimmerCost = swimmers * SWIMMER_PRICE;
+    const spectatorCost = spectators * SPECTATOR_PRICE;
+    const total = swimmerCost + spectatorCost;
+
+    el("swimmerCostLine").textContent = `${swimmers} Swimmer${swimmers === 1 ? "" : "s"} × $${SWIMMER_PRICE}`;
+    el("swimmerCostVal").textContent = `$${swimmerCost}`;
+    el("spectatorCostLine").textContent = `${spectators} Spectator${spectators === 1 ? "" : "s"} × $${SPECTATOR_PRICE}`;
+    el("spectatorCostVal").textContent = `$${spectatorCost}`;
+    el("totalCostVal").textContent = `$${total}`;
+    el("totalCostVal2").textContent = `$${total}`;
+    el("confirmTotal").textContent = `$${total}`;
+  }
+
+  function buildSwimmerFields() {
+    const count = getSwimmerCount();
+    const container = el("swimmerFields");
+    container.innerHTML = "";
+    for (let i = 1; i <= count; i++) {
+      const card = document.createElement("div");
+      card.className = "swimmer-card";
+      card.innerHTML = `
+        <div class="swimmer-label">Swimmer ${i}</div>
+        <div class="row-2">
+          <div class="field" style="margin-bottom:0;">
+            <label>First Name <span class="req">*</span></label>
+            <input type="text" id="swimmerFirst${i}" />
+            <div class="error-msg" id="err-swimmerFirst${i}">Required.</div>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label>Last Name <span class="req">*</span></label>
+            <input type="text" id="swimmerLast${i}" />
+            <div class="error-msg" id="err-swimmerLast${i}">Required.</div>
+          </div>
+        </div>
+      `;
+      container.appendChild(card);
+    }
+  }
+
+  function goToStep(step) {
+    if (step > currentStep) {
+      if (currentStep === 1 && !validateStep1()) return;
+      if (currentStep === 2 && !validateStep2()) return;
+      if (currentStep === 3 && !validateStep3()) return;
+    }
+    if (step === 3 && currentStep === 2) {
+      buildSwimmerFields();
+    }
+    showStep(step);
+  }
+
+  el("swimmerCount").addEventListener("change", updateCostDisplay);
+  el("spectatorCount").addEventListener("change", updateCostDisplay);
+
+  el("notes").addEventListener("input", (e) => {
+    el("notesCount").textContent = e.target.value.length;
+  });
+
+  ["parentFirstName", "parentLastName", "email", "phone"].forEach((id) => {
+    el(id).addEventListener("input", () => clearError(id));
+  });
+  el("swimmerCount").addEventListener("change", () => clearError("swimmerCount"));
+  el("confirmCharge").addEventListener("change", () => clearError("confirmCharge"));
+
+  document.getElementById("signupForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!validateStep4()) return;
+
+    const submitBtn = el("submitBtn");
+    const submitError = el("submitError");
+    submitError.classList.remove("show");
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner"></span>Submitting...';
+
+    const swimmerCount = getSwimmerCount();
+    const swimmers = [];
+    for (let i = 1; i <= swimmerCount; i++) {
+      swimmers.push({
+        firstName: el(`swimmerFirst${i}`).value.trim(),
+        lastName: el(`swimmerLast${i}`).value.trim(),
+      });
+    }
+
+    const payload = {
+      parentFirstName: el("parentFirstName").value.trim(),
+      parentLastName: el("parentLastName").value.trim(),
+      email: el("email").value.trim(),
+      phone: el("phone").value.trim(),
+      swimmerCount: swimmerCount,
+      swimmers: swimmers,
+      spectatorCount: getSpectatorCount(),
+      totalCost: calcTotal(),
+      notes: el("notes").value.trim(),
+      submittedAt: new Date().toISOString(),
+    };
+
+    try {
+      // no-cors mode: the response is opaque, so we treat the request as
+      // successful once it completes without throwing.
+      await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload),
+        keepalive: true,
+      });
+      showSuccess(payload);
+    } catch (err) {
+      console.error("Submission failed:", err);
+      submitError.classList.add("show");
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Complete Signup";
+    }
+  });
+
+  function showSuccess(payload) {
+    document.getElementById("signupForm").style.display = "none";
+    el("progressWrap").style.display = "none";
+    el("successHeadline").textContent = `You're all set, ${payload.parentFirstName}! 🎉`;
+    el("successMsg").textContent = `We've registered your family for the Barracuda Swim Meet.`;
+    el("successEmailMsg").textContent = `A confirmation email is on its way to ${payload.email}.`;
+    el("successScreen").classList.add("active");
+  }
+
+  updateCostDisplay();
+  updateProgress();
+</script>
+</body>
+</html>
