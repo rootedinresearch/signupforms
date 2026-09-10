@@ -532,9 +532,15 @@
     <!-- STEP 4: Swimmer names -->
     <div class="step" data-step="4">
       <h2>Swimmer Names</h2>
-      <p class="step-copy">Tell us about each swimmer:</p>
+      <p class="step-copy" id="step4Copy">Tell us about each swimmer:</p>
 
       <div id="swimmerFields"></div>
+
+      <div class="field" id="swimmerNamesCombinedField" hidden>
+        <label>Swimmer Name(s) <span class="req">*</span></label>
+        <input type="text" id="swimmerNamesCombined" placeholder="e.g. Sarah Doe, Tommy Doe" />
+        <div class="error-msg" id="err-swimmerNamesCombined">Please list your swimmer's name(s).</div>
+      </div>
 
       <div class="btn-row">
         <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
@@ -612,7 +618,7 @@
   }
 
   function getSequence() {
-    return [1, 2, 3, 4, 5];
+    return getAttending() === "No" ? [1, 2, 4, 5] : [1, 2, 3, 4, 5];
   }
 
   function updateProgress() {
@@ -701,6 +707,12 @@
   }
 
   function validateStep4() {
+    if (getAttending() === "No") {
+      const combined = el("swimmerNamesCombined");
+      if (!combined.value.trim()) { setError("swimmerNamesCombined"); return false; }
+      clearError("swimmerNamesCombined");
+      return true;
+    }
     let valid = true;
     const count = parseInt(el("swimmerCount").value, 10) || 0;
     for (let i = 1; i <= count; i++) {
@@ -745,6 +757,16 @@
   }
 
   function buildSwimmerFields() {
+    const declining = getAttending() === "No";
+    el("swimmerNamesCombinedField").hidden = !declining;
+    el("step4Copy").textContent = declining
+      ? "Just enter your swimmer's name(s) below."
+      : "Tell us about each swimmer:";
+    if (declining) {
+      el("swimmerFields").innerHTML = "";
+      return;
+    }
+
     const count = getSwimmerCount();
     const container = el("swimmerFields");
     container.innerHTML = "";
@@ -839,6 +861,7 @@
       phone: el("phone").value.trim(),
       swimmerCount: swimmerCount,
       swimmers: swimmers,
+      swimmerNamesText: attending === "No" ? el("swimmerNamesCombined").value.trim() : "",
       spectatorCount: attending === "Yes" ? getSpectatorCount() : 0,
       totalCost: attending === "Yes" ? swimmerCount * SWIMMER_PRICE : 0,
       notes: el("notes").value.trim(),

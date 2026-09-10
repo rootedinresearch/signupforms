@@ -35,11 +35,13 @@ function doPost(e) {
 
     ensureHeaders(sheet);
 
-    var swimmerNames = (data.swimmers || [])
-      .map(function (s) {
-        return ((s.firstName || "") + " " + (s.lastName || "")).trim();
-      })
-      .join("; ");
+    var swimmerNames = data.swimmerNamesText
+      ? data.swimmerNamesText
+      : (data.swimmers || [])
+          .map(function (s) {
+            return ((s.firstName || "") + " " + (s.lastName || "")).trim();
+          })
+          .join("; ");
 
     var submittedDate = data.submittedAt ? new Date(data.submittedAt) : new Date();
     var submittedAtCst = Utilities.formatDate(
@@ -112,7 +114,8 @@ function sendConfirmationEmail(data, swimmerNames) {
   } else {
     body =
       "Hi " + (data.parentFirstName || "there") + ",\n\n" +
-      "Thanks for letting us know — we've noted that your swimmer will not be attending " +
+      "Thanks for letting us know — we've noted that " +
+      (swimmerNames ? swimmerNames : "your swimmer") + " will not be attending " +
       "the Joint-Franchise Barracuda Swim Meet on Saturday, October 17, 2026 at the Denton " +
       "Natatorium. No fees are due.\n\n" +
       "We'd love to see your swimmer at a future meet!\n\n" +
