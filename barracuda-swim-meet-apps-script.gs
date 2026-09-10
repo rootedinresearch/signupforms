@@ -3,21 +3,21 @@
  *
  * Deploy: Google Sheet -> Extensions -> Apps Script -> paste this file ->
  * Deploy -> New deployment -> Web app -> Execute as "Me" -> Access "Anyone".
- * Copy the resulting /exec URL into APPS_SCRIPT_URL in
- * barracuda-swim-meet-signup.html.
+ * Copy the resulting /exec URL into APPS_SCRIPT_URL in index.html.
  */
 
 var SHEET_ID = "1HW7NUahhl4eRlthmR6BSP-U35GHq5VcpF1aO74Timck";
 var TIME_ZONE = "America/Chicago";
 
 var HEADERS = [
+  "Attending",
   "Parent Name",
   "Email",
   "Phone",
   "# Swimmers",
   "Swimmer Names",
-  "# Spectators",
-  "Total Cost",
+  "# Spectators (est.)",
+  "Registration Fee Due",
   "Submitted At (CST/CDT)",
   "Notes",
 ];
@@ -49,6 +49,7 @@ function doPost(e) {
     );
 
     sheet.appendRow([
+      data.attending || "",
       ((data.parentFirstName || "") + " " + (data.parentLastName || "")).trim(),
       data.email || "",
       data.phone || "",
@@ -85,21 +86,39 @@ function ensureHeaders(sheet) {
 function sendConfirmationEmail(data, swimmerNames) {
   if (!data.email) return;
 
-  var parentName = ((data.parentFirstName || "") + " " + (data.parentLastName || "")).trim();
-  var subject = "You're registered! Barracuda Swim Meet — Oct 17, 2026";
+  var attending = data.attending === "Yes";
+  var subject = attending
+    ? "You're registered! Joint-Franchise Barracuda Meet — Oct 17, 2026"
+    : "Response received — Joint-Franchise Barracuda Meet, Oct 17, 2026";
 
-  var body =
-    "Hi " + (data.parentFirstName || "there") + ",\n\n" +
-    "We've got your signup for the Barracuda Swim Meet!\n\n" +
-    "Saturday, October 17, 2026 at 5:30 PM\n" +
-    "Denton Natatorium\n\n" +
-    "Swimmers: " + (data.swimmerCount || 0) + (swimmerNames ? " (" + swimmerNames + ")" : "") + "\n" +
-    "Spectators: " + (data.spectatorCount || 0) + "\n" +
-    "Total: $" + (data.totalCost || 0) + " (added to your family account)\n\n" +
-    "We'll share full details — including start times and event assignments — " +
-    "as they're finalized closer to the meet.\n\n" +
-    "Questions? Call us at 817-973-5455 or email goswimarlsgpra@britishswimschool.com\n\n" +
-    "— British Swim School | Barracudas";
+  var body;
+  if (attending) {
+    body =
+      "Hi " + (data.parentFirstName || "there") + ",\n\n" +
+      "We've got your signup for the Joint-Franchise Barracuda Swim Meet!\n\n" +
+      "Saturday, October 17, 2026 at 6:30 PM\n" +
+      "Denton Natatorium\n\n" +
+      "Swimmers: " + (data.swimmerCount || 0) + (swimmerNames ? " (" + swimmerNames + ")" : "") + "\n" +
+      "Spectators (estimate): " + (data.spectatorCount || 0) + "\n" +
+      "Swimmer registration due: $" + (data.totalCost || 0) + "\n\n" +
+      "The $15/swimmer registration fee will be charged to your family account 14 days " +
+      "before the meet, once the final team roster is set. The $5/person spectator fee " +
+      "is paid on-site at the door — the spectator count above is just an estimate. " +
+      "Families are responsible for their own transportation to and from the meet.\n\n" +
+      "We'll share full details — including start times and event assignments — as " +
+      "they're finalized closer to the meet.\n\n" +
+      "Questions? Call us at 817-973-5455 or email goswimarlsgpra@britishswimschool.com\n\n" +
+      "— British Swim School | Barracudas";
+  } else {
+    body =
+      "Hi " + (data.parentFirstName || "there") + ",\n\n" +
+      "Thanks for letting us know — we've noted that your swimmer will not be attending " +
+      "the Joint-Franchise Barracuda Swim Meet on Saturday, October 17, 2026 at the Denton " +
+      "Natatorium. No fees are due.\n\n" +
+      "We'd love to see your swimmer at a future meet!\n\n" +
+      "Questions? Call us at 817-973-5455 or email goswimarlsgpra@britishswimschool.com\n\n" +
+      "— British Swim School | Barracudas";
+  }
 
   MailApp.sendEmail({
     to: data.email,

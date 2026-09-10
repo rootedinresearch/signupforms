@@ -1,8 +1,8 @@
 # Barracuda Swim Meet Signup — Deployment
 
 ## Files
-- `barracuda-swim-meet-signup.html` — self-contained signup form (BSS branded, 4-step, mobile-first)
-- `barracuda-swim-meet-apps-script.gs` — Google Apps Script backend that appends signups to the target Google Sheet
+- `index.html` — self-contained RSVP/signup form (BSS branded, 5-step, mobile-first), deployed to Vercel as the site root
+- `barracuda-swim-meet-apps-script.gs` — Google Apps Script backend that appends responses to the target Google Sheet and sends confirmation emails
 
 ## Deploy the backend
 1. Open the target sheet: https://docs.google.com/spreadsheets/d/1HW7NUahhl4eRlthmR6BSP-U35GHq5VcpF1aO74Timck/edit
@@ -14,9 +14,12 @@
 5. Copy the deployment `/exec` URL
 
 ## Wire up the frontend
-1. Open `barracuda-swim-meet-signup.html`
+1. Open `index.html`
 2. Set `APPS_SCRIPT_URL` (near the top of the `<script>` block) to the deployment URL from above
-3. Test locally by opening the file in a browser, submitting a test signup, and confirming a row appears in the sheet (the script auto-adds header row on first submission)
+3. Test locally by opening the file in a browser, submitting a test response for both "Yes" and "No" attending, and confirming a row appears in the sheet and a confirmation email arrives (the script auto-adds the header row on first submission)
+
+## Redeploying after script changes
+Editing `barracuda-swim-meet-apps-script.gs` alone doesn't update the live endpoint — after pasting changes into the Apps Script editor, go to **Deploy → Manage deployments → edit the existing deployment → New version**.
 
 ## Host it
-Upload the HTML file as-is to Vercel/GitHub Pages/static hosting, or share the file directly. No build step required.
+Connected to Vercel via the `rootedinresearch/signupforms` GitHub repo (`main` branch, Framework Preset: Other, no build step).

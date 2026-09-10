@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Barracuda Swim Meet Registration — British Swim School</title>
-<meta name="description" content="Register swimmers for the Barracuda Swim Meet on October 17 at Denton Natatorium. $15 per swimmer, $5 per spectator." />
+<meta name="description" content="RSVP for the Joint-Franchise Barracuda Swim Meet on October 17 at Denton Natatorium. $15 swimmer registration, $5 spectator fee paid on-site." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -328,6 +328,54 @@
     margin-bottom: 16px;
   }
   .submit-error.show { display: block; }
+  .intro-copy {
+    font-weight: 400;
+    font-size: 14.5px;
+    color: var(--text-dark);
+    line-height: 1.65;
+    margin: 0 0 20px;
+  }
+  .intro-copy strong { color: var(--bss-blue); }
+  .radio-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+  .radio-option {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .radio-option input { accent-color: var(--bss-blue); width: 18px; height: 18px; }
+  .radio-option.selected {
+    border-color: var(--bss-blue);
+    background: #EEF1FD;
+  }
+  .fee-note {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-top: 10px;
+  }
+  .decline-note {
+    background: #FFF8E1;
+    border: 1.5px solid #FFE9A8;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: var(--text-dark);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
   @media (max-width: 420px) {
     .row-2 { grid-template-columns: 1fr; }
     .hero h1 { font-size: 22px; }
@@ -339,25 +387,65 @@
 
   <div class="hero">
     <div class="logo">British Swim School <span>| Barracudas</span></div>
-    <h1>Barracuda Swim Meet Registration</h1>
+    <h1>Joint-Franchise Barracuda Swim Meet</h1>
     <div class="event-meta">
-      <strong>Saturday, October 17, 2026 · 5:30 PM</strong><br>
+      <strong>Saturday, October 17, 2026 · 6:30 PM</strong><br>
       Denton Natatorium
     </div>
     <div class="event-note">We'll share full details — including start times and event assignments — as they're finalized closer to the meet.</div>
   </div>
 
   <div class="progress-wrap" id="progressWrap">
-    <div class="progress-label" id="progressLabel">Step 1 of 4</div>
-    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:25%"></div></div>
+    <div class="progress-label" id="progressLabel">Step 1 of 5</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:20%"></div></div>
   </div>
 
   <form id="signupForm" novalidate>
 
-    <!-- STEP 1 -->
+    <!-- STEP 1: Intro + Attending -->
     <div class="step active" data-step="1">
+      <h2>Will Your Swimmer Be Attending?</h2>
+      <p class="intro-copy">
+        Since starting our Barracuda program, it's been a goal of ours to hold a bigger meet
+        where our swimmers get to compete against other British Swim School Families swimmers
+        across North Texas — at a pool with proper dive blocks and backstroke flags. We're
+        excited to hold this Joint-Franchise meet at the <strong>Denton Natatorium</strong> on
+        <strong>Saturday, October 17 at 6:30 PM</strong>.
+        <br><br>
+        We want every family to respond, even if your swimmer won't be attending. Please
+        complete this form no later than <strong>September 15</strong> — swimmers not
+        registered by then will not be able to participate in the meet.
+        <br><br>
+        Swimmer registration is <strong>$15</strong> and will be charged to your family
+        account 14 days before the meet, once the final team roster is set. The
+        <strong>$5 per person</strong> spectator fee is paid on-site at the door. Families
+        are responsible for their own transportation to and from the meet.
+      </p>
+
+      <div class="field">
+        <label>Will your swimmer be attending the Joint-Franchise meet on October 17th? <span class="req">*</span></label>
+        <div class="radio-group">
+          <label class="radio-option" id="attendingYesLabel">
+            <input type="radio" name="attending" id="attendingYes" value="Yes" />
+            Yes
+          </label>
+          <label class="radio-option" id="attendingNoLabel">
+            <input type="radio" name="attending" id="attendingNo" value="No" />
+            No
+          </label>
+        </div>
+        <div class="error-msg" id="err-attending">Please let us know if your swimmer will be attending.</div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-primary" onclick="nextStep()">Continue</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Contact -->
+    <div class="step" data-step="2">
       <h2>Family Contact Information</h2>
-      <p class="step-copy">Register your family for the Barracuda Swim Meet — Saturday, October 17 at 5:30 PM at Denton Natatorium.</p>
+      <p class="step-copy">Let us know who to reach with meet updates.</p>
 
       <div class="row-2">
         <div class="field">
@@ -385,12 +473,13 @@
       </div>
 
       <div class="btn-row">
-        <button type="button" class="btn btn-primary" onclick="goToStep(2)">Continue</button>
+        <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
+        <button type="button" class="btn btn-primary" onclick="nextStep()">Continue</button>
       </div>
     </div>
 
-    <!-- STEP 2 -->
-    <div class="step" data-step="2">
+    <!-- STEP 3: Counts -->
+    <div class="step" data-step="3">
       <h2>Swimmers &amp; Spectators</h2>
       <p class="step-copy">How many will be competing and how many coming to cheer them on?</p>
 
@@ -408,7 +497,7 @@
           <div class="error-msg" id="err-swimmerCount">Please select the number of swimmers.</div>
         </div>
         <div class="field">
-          <label>Number of Spectators <span class="req">*</span></label>
+          <label>Number of Spectators</label>
           <select id="spectatorCount">
             <option value="0">0</option>
             <option value="1">1</option>
@@ -428,32 +517,33 @@
       <div class="cost-summary">
         <div class="cost-line"><span id="swimmerCostLine">0 Swimmers × $15</span><span id="swimmerCostVal">$0</span></div>
         <div class="cost-line"><span id="spectatorCostLine">0 Spectators × $5</span><span id="spectatorCostVal">$0</span></div>
-        <div class="cost-total"><span>Total</span><span id="totalCostVal">$0</span></div>
+        <div class="cost-total"><span>Estimated Total</span><span id="totalCostVal">$0</span></div>
       </div>
+      <p class="fee-note">Spectators pay their $5/person fee on-site — this estimate just helps us plan. Only the swimmer registration fee is charged to your family account, 14 days before the meet, once the final team is selected.</p>
 
       <div class="btn-row" style="margin-top:22px;">
-        <button type="button" class="btn btn-secondary" onclick="goToStep(1)">Back</button>
-        <button type="button" class="btn btn-primary" onclick="goToStep(3)">Continue</button>
+        <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
+        <button type="button" class="btn btn-primary" onclick="nextStep()">Continue</button>
       </div>
     </div>
 
-    <!-- STEP 3 -->
-    <div class="step" data-step="3">
+    <!-- STEP 4: Swimmer names -->
+    <div class="step" data-step="4">
       <h2>Swimmer Names</h2>
       <p class="step-copy">Tell us about each swimmer:</p>
 
       <div id="swimmerFields"></div>
 
       <div class="btn-row">
-        <button type="button" class="btn btn-secondary" onclick="goToStep(2)">Back</button>
-        <button type="button" class="btn btn-primary" onclick="goToStep(4)">Continue</button>
+        <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
+        <button type="button" class="btn btn-primary" onclick="nextStep()">Continue</button>
       </div>
     </div>
 
-    <!-- STEP 4 -->
-    <div class="step" data-step="4">
+    <!-- STEP 5: Notes & confirmation -->
+    <div class="step" data-step="5">
       <h2>Notes &amp; Confirmation</h2>
-      <p class="step-copy">Just a couple more things and you're all set.</p>
+      <p class="step-copy" id="step5Copy">Just a couple more things and you're all set.</p>
 
       <div class="field">
         <label>Additional Notes</label>
@@ -461,20 +551,28 @@
         <div class="char-count"><span id="notesCount">0</span>/200</div>
       </div>
 
-      <div class="cost-summary" style="margin-bottom:20px;">
-        <div class="cost-total"><span>Total Due</span><span id="totalCostVal2">$0</span></div>
+      <div id="declineNote" class="decline-note" hidden>
+        Thanks for letting us know — no fees are due. We'll miss having your swimmer at this one!
       </div>
 
-      <div class="submit-error" id="submitError">Something went wrong submitting your registration. Please try again.</div>
+      <div id="chargeSection">
+        <div class="cost-summary" style="margin-bottom:12px;">
+          <div class="cost-line"><span>Swimmer registration (charged 14 days before meet)</span><span id="registrationCostVal">$0</span></div>
+          <div class="cost-line"><span>Spectator fee (paid on-site, estimate)</span><span id="spectatorCostVal2">$0</span></div>
+          <div class="cost-total"><span>Estimated Total</span><span id="totalCostVal2">$0</span></div>
+        </div>
 
-      <div class="confirm-box">
-        <input type="checkbox" id="confirmCharge" />
-        <label for="confirmCharge">I authorize charging this family's card on file for the full amount (<strong><span id="confirmTotal">$0</span></strong>).</label>
+        <div class="confirm-box">
+          <input type="checkbox" id="confirmCharge" />
+          <label for="confirmCharge">I authorize charging this family's account <strong><span id="confirmTotal">$0</span></strong> for swimmer registration 14 days before the meet, once the final team roster is set. I understand the $5/person spectator fee is paid on-site, and that our family is responsible for our own transportation to and from the meet.</label>
+        </div>
+        <div class="error-msg" id="err-confirmCharge">Please confirm authorization to continue.</div>
       </div>
-      <div class="error-msg" id="err-confirmCharge">Please confirm authorization to continue.</div>
+
+      <div class="submit-error" id="submitError">Something went wrong submitting your response. Please try again.</div>
 
       <div class="btn-row">
-        <button type="button" class="btn btn-secondary" onclick="goToStep(3)">Back</button>
+        <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
         <button type="submit" class="btn btn-primary" id="submitBtn">Complete Signup</button>
       </div>
     </div>
@@ -501,15 +599,35 @@
 
   const SWIMMER_PRICE = 15;
   const SPECTATOR_PRICE = 5;
-  const TOTAL_STEPS = 4;
 
   let currentStep = 1;
 
   const el = (id) => document.getElementById(id);
 
+  function getAttending() {
+    const checked = document.querySelector('input[name="attending"]:checked');
+    return checked ? checked.value : "";
+  }
+
+  function getSequence() {
+    return getAttending() === "No" ? [1, 2, 5] : [1, 2, 3, 4, 5];
+  }
+
   function updateProgress() {
-    el("progressLabel").textContent = `Step ${currentStep} of ${TOTAL_STEPS}`;
-    el("progressFill").style.width = `${(currentStep / TOTAL_STEPS) * 100}%`;
+    const seq = getSequence();
+    const idx = seq.indexOf(currentStep) + 1;
+    el("progressLabel").textContent = `Step ${idx} of ${seq.length}`;
+    el("progressFill").style.width = `${(idx / seq.length) * 100}%`;
+  }
+
+  function updateStep5ForAttending() {
+    const declining = getAttending() === "No";
+    el("declineNote").hidden = !declining;
+    el("chargeSection").hidden = declining;
+    el("step5Copy").textContent = declining
+      ? "Thanks for filling this out — just confirm below."
+      : "Just a couple more things and you're all set.";
+    el("submitBtn").textContent = declining ? "Submit Response" : "Complete Signup";
   }
 
   function showStep(step) {
@@ -517,6 +635,7 @@
       s.classList.toggle("active", parseInt(s.dataset.step, 10) === step);
     });
     currentStep = step;
+    if (step === 5) updateStep5ForAttending();
     updateProgress();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -545,6 +664,15 @@
   }
 
   function validateStep1() {
+    if (!getAttending()) {
+      el("err-attending").classList.add("show");
+      return false;
+    }
+    el("err-attending").classList.remove("show");
+    return true;
+  }
+
+  function validateStep2() {
     let valid = true;
     ["parentFirstName", "parentLastName"].forEach((id) => {
       if (!el(id).value.trim()) { setError(id); valid = false; } else { clearError(id); }
@@ -554,13 +682,13 @@
     return valid;
   }
 
-  function validateStep2() {
+  function validateStep3() {
     let valid = true;
     if (!el("swimmerCount").value) { setError("swimmerCount"); valid = false; } else { clearError("swimmerCount"); }
     return valid;
   }
 
-  function validateStep3() {
+  function validateStep4() {
     let valid = true;
     const count = parseInt(el("swimmerCount").value, 10) || 0;
     for (let i = 1; i <= count; i++) {
@@ -572,7 +700,8 @@
     return valid;
   }
 
-  function validateStep4() {
+  function validateStep5() {
+    if (getAttending() === "No") return true;
     let valid = true;
     if (!el("confirmCharge").checked) { setError("confirmCharge"); valid = false; } else { clearError("confirmCharge"); }
     return valid;
@@ -583,12 +712,6 @@
   }
   function getSpectatorCount() {
     return parseInt(el("spectatorCount").value, 10) || 0;
-  }
-
-  function calcTotal() {
-    const swimmers = getSwimmerCount();
-    const spectators = getSpectatorCount();
-    return swimmers * SWIMMER_PRICE + spectators * SPECTATOR_PRICE;
   }
 
   function updateCostDisplay() {
@@ -603,8 +726,10 @@
     el("spectatorCostLine").textContent = `${spectators} Spectator${spectators === 1 ? "" : "s"} × $${SPECTATOR_PRICE}`;
     el("spectatorCostVal").textContent = `$${spectatorCost}`;
     el("totalCostVal").textContent = `$${total}`;
+    el("registrationCostVal").textContent = `$${swimmerCost}`;
+    el("spectatorCostVal2").textContent = `$${spectatorCost}`;
     el("totalCostVal2").textContent = `$${total}`;
-    el("confirmTotal").textContent = `$${total}`;
+    el("confirmTotal").textContent = `$${swimmerCost}`;
   }
 
   function buildSwimmerFields() {
@@ -633,17 +758,33 @@
     }
   }
 
-  function goToStep(step) {
-    if (step > currentStep) {
-      if (currentStep === 1 && !validateStep1()) return;
-      if (currentStep === 2 && !validateStep2()) return;
-      if (currentStep === 3 && !validateStep3()) return;
-    }
-    if (step === 3 && currentStep === 2) {
-      buildSwimmerFields();
-    }
-    showStep(step);
+  function nextStep() {
+    if (currentStep === 1 && !validateStep1()) return;
+    if (currentStep === 2 && !validateStep2()) return;
+    if (currentStep === 3 && !validateStep3()) return;
+    if (currentStep === 4 && !validateStep4()) return;
+
+    const seq = getSequence();
+    const idx = seq.indexOf(currentStep);
+    const target = seq[idx + 1];
+    if (target === 3) buildSwimmerFields();
+    showStep(target);
   }
+
+  function prevStep() {
+    const seq = getSequence();
+    const idx = seq.indexOf(currentStep);
+    if (idx <= 0) return;
+    showStep(seq[idx - 1]);
+  }
+
+  document.querySelectorAll('input[name="attending"]').forEach((input) => {
+    input.addEventListener("change", () => {
+      el("attendingYesLabel").classList.toggle("selected", el("attendingYes").checked);
+      el("attendingNoLabel").classList.toggle("selected", el("attendingNo").checked);
+      el("err-attending").classList.remove("show");
+    });
+  });
 
   el("swimmerCount").addEventListener("change", updateCostDisplay);
   el("spectatorCount").addEventListener("change", updateCostDisplay);
@@ -660,15 +801,16 @@
 
   document.getElementById("signupForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    if (!validateStep4()) return;
+    if (!validateStep5()) return;
 
     const submitBtn = el("submitBtn");
     const submitError = el("submitError");
+    const attending = getAttending();
     submitError.classList.remove("show");
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span class="spinner"></span>Submitting...';
 
-    const swimmerCount = getSwimmerCount();
+    const swimmerCount = attending === "Yes" ? getSwimmerCount() : 0;
     const swimmers = [];
     for (let i = 1; i <= swimmerCount; i++) {
       swimmers.push({
@@ -678,14 +820,15 @@
     }
 
     const payload = {
+      attending: attending,
       parentFirstName: el("parentFirstName").value.trim(),
       parentLastName: el("parentLastName").value.trim(),
       email: el("email").value.trim(),
       phone: el("phone").value.trim(),
       swimmerCount: swimmerCount,
       swimmers: swimmers,
-      spectatorCount: getSpectatorCount(),
-      totalCost: calcTotal(),
+      spectatorCount: attending === "Yes" ? getSpectatorCount() : 0,
+      totalCost: attending === "Yes" ? getSwimmerCount() * SWIMMER_PRICE : 0,
       notes: el("notes").value.trim(),
       submittedAt: new Date().toISOString(),
     };
@@ -705,16 +848,22 @@
       console.error("Submission failed:", err);
       submitError.classList.add("show");
       submitBtn.disabled = false;
-      submitBtn.textContent = "Complete Signup";
+      submitBtn.textContent = attending === "No" ? "Submit Response" : "Complete Signup";
     }
   });
 
   function showSuccess(payload) {
     document.getElementById("signupForm").style.display = "none";
     el("progressWrap").style.display = "none";
-    el("successHeadline").textContent = `You're all set, ${payload.parentFirstName}! 🎉`;
-    el("successMsg").textContent = `We've registered your family for the Barracuda Swim Meet.`;
-    el("successEmailMsg").textContent = `A confirmation email is on its way to ${payload.email}.`;
+    if (payload.attending === "No") {
+      el("successHeadline").textContent = `Thanks, ${payload.parentFirstName}!`;
+      el("successMsg").textContent = `We've noted that your swimmer won't be attending the October 17 meet — no fees are due.`;
+      el("successEmailMsg").textContent = `A confirmation of your response is on its way to ${payload.email}.`;
+    } else {
+      el("successHeadline").textContent = `You're all set, ${payload.parentFirstName}! 🎉`;
+      el("successMsg").textContent = `We've registered your family for the Barracuda Swim Meet.`;
+      el("successEmailMsg").textContent = `A confirmation email is on its way to ${payload.email}.`;
+    }
     el("successScreen").classList.add("active");
   }
 
