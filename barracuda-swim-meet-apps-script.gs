@@ -8,6 +8,7 @@
  */
 
 var SHEET_ID = "1HW7NUahhl4eRlthmR6BSP-U35GHq5VcpF1aO74Timck";
+var TIME_ZONE = "America/Chicago";
 
 var HEADERS = [
   "Parent Name",
@@ -17,7 +18,7 @@ var HEADERS = [
   "Swimmer Names",
   "# Spectators",
   "Total Cost",
-  "Submitted At",
+  "Submitted At (CST/CDT)",
   "Notes",
 ];
 
@@ -40,6 +41,13 @@ function doPost(e) {
       })
       .join("; ");
 
+    var submittedDate = data.submittedAt ? new Date(data.submittedAt) : new Date();
+    var submittedAtCst = Utilities.formatDate(
+      submittedDate,
+      TIME_ZONE,
+      "yyyy-MM-dd HH:mm:ss zzz"
+    );
+
     sheet.appendRow([
       ((data.parentFirstName || "") + " " + (data.parentLastName || "")).trim(),
       data.email || "",
@@ -48,9 +56,11 @@ function doPost(e) {
       swimmerNames,
       data.spectatorCount || 0,
       data.totalCost || 0,
-      data.submittedAt || new Date().toISOString(),
+      submittedAtCst,
       data.notes || "",
     ]);
+
+    sendConfirmationEmail(data, swimmerNames);
 
     return ContentService.createTextOutput(JSON.stringify({ success: true }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -70,4 +80,30 @@ function ensureHeaders(sheet) {
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(HEADERS);
   }
+}
+
+function sendConfirmationEmail(data, swimmerNames) {
+  if (!data.email) return;
+
+  var parentName = ((data.parentFirstName || "") + " " + (data.parentLastName || "")).trim();
+  var subject = "You're registered! Barracuda Swim Meet — Oct 17, 2026";
+
+  var body =
+    "Hi " + (data.parentFirstName || "there") + ",\n\n" +
+    "We've got your signup for the Barracuda Swim Meet!\n\n" +
+    "Saturday, October 17, 2026 at 5:30 PM\n" +
+    "Denton Natatorium\n\n" +
+    "Swimmers: " + (data.swimmerCount || 0) + (swimmerNames ? " (" + swimmerNames + ")" : "") + "\n" +
+    "Spectators: " + (data.spectatorCount || 0) + "\n" +
+    "Total: $" + (data.totalCost || 0) + " (added to your family account)\n\n" +
+    "We'll share full details — including start times and event assignments — " +
+    "as they're finalized closer to the meet.\n\n" +
+    "Questions? Call us at 817-973-5455 or email goswimarlsgpra@britishswimschool.com\n\n" +
+    "— British Swim School | Barracudas";
+
+  MailApp.sendEmail({
+    to: data.email,
+    subject: subject,
+    body: body,
+  });
 }
