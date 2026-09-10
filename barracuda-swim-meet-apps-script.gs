@@ -50,7 +50,7 @@ function doPost(e) {
       "yyyy-MM-dd HH:mm:ss zzz"
     );
 
-    sheet.appendRow([
+    var rowValues = [
       data.attending || "",
       ((data.parentFirstName || "") + " " + (data.parentLastName || "")).trim(),
       data.email || "",
@@ -61,7 +61,15 @@ function doPost(e) {
       data.totalCost || 0,
       submittedAtCst,
       data.notes || "",
-    ]);
+    ];
+
+    var newRow = sheet.getLastRow() + 1;
+    var phoneColIndex = HEADERS.indexOf("Phone") + 1;
+    // Force the phone cell to plain text first — otherwise Sheets treats a
+    // value like "+1 (405) 612-0038" as an arithmetic formula (leading "+")
+    // and throws a formula parse error, aborting the whole row write.
+    sheet.getRange(newRow, phoneColIndex).setNumberFormat("@");
+    sheet.getRange(newRow, 1, 1, rowValues.length).setValues([rowValues]);
 
     sendConfirmationEmail(data, swimmerNames);
 
