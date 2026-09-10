@@ -481,7 +481,7 @@
     <!-- STEP 3: Counts -->
     <div class="step" data-step="3">
       <h2>Swimmers &amp; Spectators</h2>
-      <p class="step-copy">How many will be competing and how many coming to cheer them on?</p>
+      <p class="step-copy" id="step3Copy">How many will be competing and how many coming to cheer them on?</p>
 
       <div class="row-2">
         <div class="field">
@@ -496,7 +496,7 @@
           </select>
           <div class="error-msg" id="err-swimmerCount">Please select the number of swimmers.</div>
         </div>
-        <div class="field">
+        <div class="field" id="spectatorField">
           <label>Number of Spectators</label>
           <select id="spectatorCount">
             <option value="0">0</option>
@@ -514,12 +514,14 @@
         </div>
       </div>
 
-      <div class="cost-summary">
-        <div class="cost-line"><span id="swimmerCostLine">0 Swimmers × $15</span><span id="swimmerCostVal">$0</span></div>
-        <div class="cost-line"><span id="spectatorCostLine">0 Spectators × $5</span><span id="spectatorCostVal">$0</span></div>
-        <div class="cost-total"><span>Estimated Total</span><span id="totalCostVal">$0</span></div>
+      <div id="step3CostSection">
+        <div class="cost-summary">
+          <div class="cost-line"><span id="swimmerCostLine">0 Swimmers × $15</span><span id="swimmerCostVal">$0</span></div>
+          <div class="cost-line"><span id="spectatorCostLine">0 Spectators × $5</span><span id="spectatorCostVal">$0</span></div>
+          <div class="cost-total"><span>Estimated Total</span><span id="totalCostVal">$0</span></div>
+        </div>
+        <p class="fee-note">Spectators pay their $5/person fee on-site — this estimate just helps us plan. Only the swimmer registration fee is charged to your family account, 14 days before the meet, once the final team is selected.</p>
       </div>
-      <p class="fee-note">Spectators pay their $5/person fee on-site — this estimate just helps us plan. Only the swimmer registration fee is charged to your family account, 14 days before the meet, once the final team is selected.</p>
 
       <div class="btn-row" style="margin-top:22px;">
         <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
@@ -610,7 +612,7 @@
   }
 
   function getSequence() {
-    return getAttending() === "No" ? [1, 2, 5] : [1, 2, 3, 4, 5];
+    return [1, 2, 3, 4, 5];
   }
 
   function updateProgress() {
@@ -630,11 +632,21 @@
     el("submitBtn").textContent = declining ? "Submit Response" : "Complete Signup";
   }
 
+  function updateStep3ForAttending() {
+    const declining = getAttending() === "No";
+    el("spectatorField").hidden = declining;
+    el("step3CostSection").hidden = declining;
+    el("step3Copy").textContent = declining
+      ? "Let us know how many swimmers this covers:"
+      : "How many will be competing and how many coming to cheer them on?";
+  }
+
   function showStep(step) {
     document.querySelectorAll(".step").forEach((s) => {
       s.classList.toggle("active", parseInt(s.dataset.step, 10) === step);
     });
     currentStep = step;
+    if (step === 3) updateStep3ForAttending();
     if (step === 5) updateStep5ForAttending();
     updateProgress();
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -767,7 +779,7 @@
     const seq = getSequence();
     const idx = seq.indexOf(currentStep);
     const target = seq[idx + 1];
-    if (target === 3) buildSwimmerFields();
+    if (target === 4) buildSwimmerFields();
     showStep(target);
   }
 
@@ -810,7 +822,7 @@
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span class="spinner"></span>Submitting...';
 
-    const swimmerCount = attending === "Yes" ? getSwimmerCount() : 0;
+    const swimmerCount = getSwimmerCount();
     const swimmers = [];
     for (let i = 1; i <= swimmerCount; i++) {
       swimmers.push({
@@ -828,7 +840,7 @@
       swimmerCount: swimmerCount,
       swimmers: swimmers,
       spectatorCount: attending === "Yes" ? getSpectatorCount() : 0,
-      totalCost: attending === "Yes" ? getSwimmerCount() * SWIMMER_PRICE : 0,
+      totalCost: attending === "Yes" ? swimmerCount * SWIMMER_PRICE : 0,
       notes: el("notes").value.trim(),
       submittedAt: new Date().toISOString(),
     };
